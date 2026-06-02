@@ -1,0 +1,7 @@
+python-telegram-bot
+telegram.ext
+requests
+BeautifulSoup
+datetime
+os
+
