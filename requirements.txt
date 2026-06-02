@@ -1,6 +1,3 @@
 python-telegram-bot
 requests
-BeautifulSoup
-datetime
-os
-
+beautifulsoup4
