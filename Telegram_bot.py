@@ -1,8 +1,6 @@
 
-from telegram.ext import Updater, CommandHandler
-import requests
-from bs4 import BeautifulSoup
-from datetime import datetime
+from telegram import Update
+from telegram.ext import Application, CommandHandler, ContextTypes
 from results_4d import get_4d_results
 import os
 
@@ -11,31 +9,29 @@ TOKEN = os.getenv("Tele_Token")
 
 
 # Command: /start
-def start(update, context):
-    update.message.reply_text("Welcome! Use /results to check the latest 4D results.")
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Welcome! Use /results to check the latest 4D results.")
 
 
-def results(update, context):
+async def results(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         if context.args:
             date_str = context.args[0]  # user provides /results YYYY-MM-DD
             data = get_4d_results(date_str)
         else:
             data = get_4d_results()
-        update.message.reply_text(f"4D Results:\n{data}")
+        await update.message.reply_text(f"4D Results:\n{data}")
     except Exception as e:
-        update.message.reply_text(f"Error fetching results: {e}")
+        await update.message.reply_text(f"Error fetching results: {e}")
 
 
 def main():
-    updater = Updater(TOKEN, use_context=True)
-    dp = updater.dispatcher
+    application = Application.builder().token(TOKEN).build()
 
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("results", results))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("results", results))
 
-    updater.start_polling()
-    updater.idle()
+    application.run_polling()
 
 if __name__ == "__main__":
     main()
